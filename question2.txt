@@ -1,0 +1,6 @@
+Find the orbital periods of Mars and Jupiter in Earth days from a reliable source.
+
+Perform the following analysis and return the answer as a single JSON object:
+1.  State the orbital period of Mars in Earth days.
+2.  State the orbital period of Jupiter in Earth days.
+3.  Calculate how many times longer Jupiter's orbital period is than Mars's.

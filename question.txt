@@ -1,0 +1,8 @@
+Find a list of sovereign countries by population density from a reliable source like Wikipedia.
+
+From this data, perform the following steps:
+1.  Filter the list to include only countries with a population of over 10 million.
+2.  From that filtered list, identify the top 3 most densely populated countries.
+3.  For each of those 3 countries, find the name of its capital city.
+
+Return the final answer as a JSON array of objects.
