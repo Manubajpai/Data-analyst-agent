@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 import lxml
 import statsmodels
 import duckdb
+import networkx as nx
 
 @tool
 def python_code_interpreter(code: str) -> dict:
@@ -25,7 +26,7 @@ def python_code_interpreter(code: str) -> dict:
     if os.path.exists(plot_path):
         os.remove(plot_path)
 
-    local_vars = { "pd": pd, "plt": plt, "np": np, "io": io, "base64": base64, "requests": requests, "BeautifulSoup": BeautifulSoup, "duckdb": duckdb, "plot_path": plot_path }
+    local_vars = { "pd": pd, "plt": plt, "np": np, "io": io, "base64": base64, "requests": requests, "BeautifulSoup": BeautifulSoup, "duckdb": duckdb, "nx": nx, "plot_path": plot_path }
     
     try:
         exec(code, local_vars)
