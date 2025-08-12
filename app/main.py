@@ -1,14 +1,17 @@
 import os
 import shutil
-import re
-import json
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.agent import create_data_analyst_agent
 import tempfile
 
-app = FastAPI( title="Data Analyst Agent API", version="1.0.0" )
+app = FastAPI(
+    title="Data Analyst Agent API",
+    description="An API that uses an LLM agent to analyze data.",
+    version="1.0.0",
+)
+
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 try:
@@ -33,16 +36,16 @@ async def analyze_data( question_file: UploadFile = File(...), data_file: Upload
 
         response = agent_executor.invoke({"input": user_prompt})
         agent_output = response.get("output")
-        
-        # This logic handles the structured dictionary returned by our tool
+
+        final_response = {}
         if isinstance(agent_output, dict):
             final_response = agent_output.get("result", {})
             if agent_output.get("plot_created"):
                 final_response["plot_url"] = "/api/latest-plot"
-            return JSONResponse(content=final_response)
         else:
-            # Fallback for any unexpected string output
-            return JSONResponse(content={"message": str(agent_output)})
+            final_response = {"message": str(agent_output)}
+
+        return final_response
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
@@ -50,7 +53,7 @@ async def analyze_data( question_file: UploadFile = File(...), data_file: Upload
 @app.get("/api/latest-plot", tags=["Analysis"])
 async def get_latest_plot():
     """Serves the most recently generated plot image."""
-    plot_path = os.path.join(tempfile.gettempdir(), "latest_plot.png")
+    plot_path = os.path.join(tempfile.gettempdir(), "plot.png")
     if os.path.exists(plot_path):
-        return FileResponse(plot_path, media_type="png")
+        return FileResponse(plot_path, media_type="image/png")
     raise HTTPException(status_code=404, detail="Plot not found.")
